@@ -1,6 +1,6 @@
 # MPI extensions
 
-Collection of extensions to the Message Passing Interface (MPI) standard.
+Collection of extensions to the [Message Passing Interface (MPI) standard](https://www.mpi-forum.org/).
 
 ## Getting Started
 

@@ -67,12 +67,9 @@ static int calc_divisors(int n, int *divisors) {
 
   /* compute remaining divisors from known divisors <= sqrt(n)
    * and reorder list in desceding order. */
-  for (int j = i - 1; j >= 0; j--) {
-    divisors[i] = n / divisors[j];
-    int tmp = divisors[j];
-    divisors[j] = divisors[i];
-    divisors[i] = tmp;
-    i++;
+  for (int j = i - 1; j >= 0; j--, i++) {
+    divisors[i] = divisors[j];
+    divisors[j] = n / divisors[i];
   }
   return i;
 }

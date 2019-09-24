@@ -38,6 +38,34 @@ extern "C" {
 #define MPI_EQUAL_WEIGHTS 0
 
 /** Compute dimensions based on weights
+ *
+ * MPI_Dims_weighted_create can be used to obtain dimensions useable for a
+ * process grid of a given number of nodes based on three combined optimization
+ * criteria. The optimization criteria include weights \f$\omega_i\f$ for each
+ * dimension. The following criteria area applied in order:
+// clang-format off
+ *   1. minimization of
+ *      the sum
+ *      \f[
+ *      \sum_{i=1}^{\text{ndims}} \omega_i \text{}_i \qquad, \text{with} \qquad
+nnodes = \prod_{i=1}^{\text{ndims}} dims_i
+ *      \f]
+ *   2. minimization of the
+ *      difference between minimum and maximum dimension \f[
+ *      \max_{i=1}^{\text{ndims}} p_i - \min_{i=1}^{\text{ndims}}
+ *      \f]
+ *   3. minimization of the largest dimension
+ *      \f[
+ *      \max_{i=1}^{\text{ndims}} p_i
+ *      \f]
+// clang-format on
+ * The criteria make it e.g. suitable to achieve an improved mapping of a
+ * process grid to the underlying application grid, that involves communication
+ * along grid dimensions (nearest neighbour communication). If the application
+ * grid has \f$G = \prod_{i=1\^{\text{ndims}} g_i\f$ grid points, the weights
+ * become $f$\omega_i = \frac{1}{g_i}$f$, assuming equal halo widths in all
+ * dimensions.
+ *
  * @param[in] nnodes number of processes
  * @param[in] number of dimensions
  * @param[in] dim_weights weight factors for dimensions or MPI_EQUAL_WEIGHTS

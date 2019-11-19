@@ -83,7 +83,7 @@ TEST_CASE("error checks for wrong input working",
   }
 }
 
-TEST_CASE("one node returns 1^ndims and success",
+TEST_CASE("one node returns all-once dims vector and success",
           "[MPI_Dims_weighted_create]") {
   int nnodes = 1;
   int ndims = 5;
@@ -146,9 +146,8 @@ TEST_CASE("dim weights", "[MPI_Dims_weighted_create]") {
   }
 }
 
-#if 0
 // TODO
-TEST_CASE("fixed dimensions stay", "[MPI_Dims_weighted_create]") {
+TEST_CASE("fixed dimensions stay", "[.][MPI_Dims_weighted_create]") {
   int nnodes = 1;
   int ndims = 1;
   double *dim_weights = NULL;
@@ -157,9 +156,14 @@ TEST_CASE("fixed dimensions stay", "[MPI_Dims_weighted_create]") {
 
   nnodes = 30;
   ndims = 3;
+  dims = std::array<int, 3>({3,0,0}).data();
+  ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
+  REQUIRE( dims[0] == 3 );
+  dims = std::array<int, 3>({0,3,0}).data();
+  ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
+  REQUIRE( dims[1] == 3 );
   dims = std::array<int, 3>({0,0,3}).data();
   ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
   REQUIRE( dims[2] == 3 );
   REQUIRE( ret == MPI_SUCCESS );
 }
-#endif

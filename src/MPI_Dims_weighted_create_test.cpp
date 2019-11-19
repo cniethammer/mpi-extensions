@@ -83,7 +83,7 @@ TEST_CASE("error checks for wrong input working",
   }
 }
 
-TEST_CASE("one node returns 1^ndims and success",
+TEST_CASE("one node returns all-once dims vector and success",
           "[MPI_Dims_weighted_create]") {
   int nnodes = 1;
   int ndims = 5;

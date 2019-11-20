@@ -9,6 +9,8 @@ include(ParseAndAddCatchTests)
 set(PARSE_CATCH_TESTS_NO_HIDDEN_TESTS on)
 
 add_library(mpi-extensions SHARED)
+install(TARGETS mpi-extensions DESTINATION lib)
+install(FILES src/mpi-extensions.h DESTINATION include)
 
 add_subdirectory(src)
 

@@ -14,6 +14,16 @@ For the tests:
 * C++11 compatible compiler
 * catch2 test framework
 
+### Installing
+
+To build, test and install the mpi-extensions library execute
+```shell
+mkdir build && cd build
+cmake ..
+make
+make test
+make install
+```
 
 ## Contact
 

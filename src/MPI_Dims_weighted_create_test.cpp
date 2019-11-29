@@ -170,14 +170,14 @@ TEST_CASE("fixed dimensions stay", "[.][MPI_Dims_weighted_create]") {
 
   nnodes = 30;
   ndims = 3;
-  dims = std::array<int, 3>({3,0,0}).data();
+  dims = std::array<int, 3>({3, 0, 0}).data();
   ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
-  REQUIRE( dims[0] == 3 );
-  dims = std::array<int, 3>({0,3,0}).data();
+  REQUIRE(dims[0] == 3);
+  dims = std::array<int, 3>({0, 3, 0}).data();
   ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
-  REQUIRE( dims[1] == 3 );
-  dims = std::array<int, 3>({0,0,3}).data();
+  REQUIRE(dims[1] == 3);
+  dims = std::array<int, 3>({0, 0, 3}).data();
   ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
-  REQUIRE( dims[2] == 3 );
-  REQUIRE( ret == MPI_SUCCESS );
+  REQUIRE(dims[2] == 3);
+  REQUIRE(ret == MPI_SUCCESS);
 }

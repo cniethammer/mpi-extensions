@@ -42,6 +42,9 @@ int main(int argc, char *argv[]) {
   MPI_Finalize();
   return result;
 }
+TEST_CASE("MPI_EQUAL_WEIGHTS is defined", "[MPI_Dims_weighted_create]") {
+  REQUIRE(MPI_EQUAL_WEIGHTS == MPI_EQUAL_WEIGHTS);
+}
 
 TEST_CASE("error checks for wrong input working",
           "[MPI_Dims_weighted_create]") {

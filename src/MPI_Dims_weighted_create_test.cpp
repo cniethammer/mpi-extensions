@@ -51,7 +51,7 @@ TEST_CASE("error checks for wrong input working",
 
   int nnodes = 1;
   int ndims = 1;
-  double *dim_weights = NULL;
+  double *dim_weights = MPI_EQUAL_WEIGHTS;
   int *dims = NULL;
 
   SECTION("if nnodes less than one return failure") {
@@ -91,7 +91,7 @@ TEST_CASE("one node returns all-once dims vector and success",
           "[MPI_Dims_weighted_create]") {
   int nnodes = 1;
   int ndims = 5;
-  double *dim_weights = NULL;
+  double *dim_weights = MPI_EQUAL_WEIGHTS;
   int dims[5] = {0, 0, 0, 0, 0};
   int ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
 
@@ -105,7 +105,7 @@ TEST_CASE("one node and zero ndims return success",
           "[MPI_Dims_weighted_create]") {
   int nnodes = 1;
   int ndims = 0;
-  double *dim_weights = NULL;
+  double *dim_weights = MPI_EQUAL_WEIGHTS;
   int *dims = NULL;
   int ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
   REQUIRE(ret == MPI_SUCCESS);
@@ -115,7 +115,7 @@ TEST_CASE("product of dims must be equal nnodes",
           "[MPI_Dims_weighted_create]") {
   int nnodes = 30;
   int ndims = 3;
-  double *dim_weights = NULL;
+  double *dim_weights = MPI_EQUAL_WEIGHTS;
   int dims[] = {0, 0, 0};
   int ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
   int dims_product = 1;
@@ -154,7 +154,7 @@ TEST_CASE("dim weights", "[MPI_Dims_weighted_create]") {
 TEST_CASE("fixed dimensions stay", "[.][MPI_Dims_weighted_create]") {
   int nnodes = 1;
   int ndims = 1;
-  double *dim_weights = NULL;
+  double *dim_weights = MPI_EQUAL_WEIGHTS;
   int *dims = NULL;
   int ret = MPI_SUCCESS;
 

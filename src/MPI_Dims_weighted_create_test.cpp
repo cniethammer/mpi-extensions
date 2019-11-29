@@ -127,7 +127,7 @@ TEST_CASE("product of dims must be equal nnodes",
 }
 
 TEST_CASE("dim weights", "[MPI_Dims_weighted_create]") {
-  SECTION("2D example") {
+  SECTION("2D example 1") {
     int nnodes = 12;
     int ndims = 2;
     double dim_weights[] = {1. / 6., 1. / 18.};
@@ -135,6 +135,16 @@ TEST_CASE("dim weights", "[MPI_Dims_weighted_create]") {
     int ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
     REQUIRE(dims[0] == 2);
     REQUIRE(dims[1] == 6);
+    REQUIRE(ret == MPI_SUCCESS);
+  }
+  SECTION("2D example 2") {
+    int nnodes = 3;
+    int ndims = 2;
+    double dim_weights[] = {1. / 4., 1. / 12.};
+    int dims[] = {0, 0};
+    int ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
+    REQUIRE(dims[0] == 1);
+    REQUIRE(dims[1] == 3);
     REQUIRE(ret == MPI_SUCCESS);
   }
   SECTION("3D example") {

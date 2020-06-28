@@ -162,7 +162,7 @@ int PMPI_Dims_weighted_create(const int nnodes, const int ndims,
       dims_product *= dims[d];
     }
     if (dims[d] < 0) {
-      return MPI_ERR_ARG;
+      return MPI_ERR_DIMS;
     }
   }
   if ((nnodes % dims_product) != 0) {

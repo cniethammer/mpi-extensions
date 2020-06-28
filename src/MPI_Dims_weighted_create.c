@@ -174,8 +174,11 @@ int PMPI_Dims_weighted_create(const int nnodes, const int ndims,
     return MPI_ERR_DIMS;
   }
 
-  if (nnodes == 1 && ndims == 0) {
-    return MPI_SUCCESS;
+  if (ndims == 0) {
+    if (nnodes == 1) {
+      return MPI_SUCCESS;
+    }
+    return MPI_ERR_DIMS;
   }
 
   if (nnodes == 1) {

@@ -28,6 +28,7 @@
 
 #include "MPI_Dims_weighted_create.h"
 
+#include <limits.h>
 #include <math.h>
 #include <mpi.h>
 
@@ -159,6 +160,10 @@ int PMPI_Dims_weighted_create(const int nnodes, const int ndims,
   int dims_product = 1;
   for (int d = 0; d < ndims; d++) {
     if (dims[d] > 0) {
+      if (dims[d] > INT_MAX / dims_product) {
+        /* integer overflow caused by provided dimenstions */
+        return MPI_ERR_INTERN;
+      }
       dims_product *= dims[d];
     }
     if (dims[d] < 0) {

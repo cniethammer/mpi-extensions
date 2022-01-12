@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 project(mpi-extensions)
 
-cmake_policy(SET CMP0110 NEW)
-
 find_package(MPI REQUIRED)
 
 include(CTest)

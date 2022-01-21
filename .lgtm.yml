@@ -1,0 +1,21 @@
+extraction:
+  cpp:
+    prepare:
+      packages:
+      - "openmpi-bin"
+      - "libopenmpi-dev"
+    after_prepare:
+      - "mkdir cmake314"
+      - "wget --quiet -O - https://cmake.org/files/v3.14/cmake-3.14.7-Linux-x86_64.tar.gz\
+        \ | tar --strip-components=1 -xz -C cmake314"
+      - "export PATH=$(pwd)/cmake314/bin:${PATH}"
+    configure:
+      command:
+      - "mkdir BUILD"
+      - "cd BUILD"
+      - "cmake -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpicxx -DBUILD_TESTING=ON\
+        \ -DFIND_PACKAGE_CATCH2=OFF .."
+    index:
+      build_command:
+      - "cd BUILD"
+      - "make VERBOSE=1"

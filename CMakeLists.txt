@@ -10,5 +10,7 @@ install(TARGETS mpi-extensions DESTINATION lib)
 install(FILES src/mpi-extensions.h DESTINATION include)
 
 add_subdirectory(src)
-add_subdirectory(tests)
+if(BUILD_TESTING)
+    add_subdirectory(tests)
+endif()
 

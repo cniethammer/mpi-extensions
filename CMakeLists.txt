@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.14)
 project(mpi-extensions)
 
 find_package(MPI REQUIRED)
+include_directories( ${MPI_C_INCLUDE_DIRS} )
 
 include(CTest)
 

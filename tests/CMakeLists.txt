@@ -27,7 +27,10 @@ target_link_libraries(mpi_dims_weighted_create_tests
     mpi-extensions
     ${MPI_CXX_LIBRARIES}
 )
-target_include_directories(mpi_dims_weighted_create_tests PRIVATE ../src)
+target_include_directories(mpi_dims_weighted_create_tests PRIVATE
+    ${MPI_CXX_INCLUDE_DIRS}
+    ../src
+)
 
 catch_discover_tests(mpi_dims_weighted_create_tests)
 

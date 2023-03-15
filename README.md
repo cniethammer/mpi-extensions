@@ -9,6 +9,7 @@ Collection of extensions to the [Message Passing Interface (MPI) standard](https
 The basic C version of the MPI extensions requires
 * C99 compatible compiler
 * MPI-3.1 compliant MPI library
+* json-c library
 
 For the tests:
 * C++11 compatible compiler

@@ -31,6 +31,20 @@ target_include_directories(mpi_dims_weighted_create_tests PRIVATE
     ${MPI_CXX_INCLUDE_DIRS}
     ../src
 )
-
 catch_discover_tests(mpi_dims_weighted_create_tests)
+
+
+add_executable(mpi_info_set_json_tests
+    MPI_Info_set_json_test.cpp
+)
+target_link_libraries(mpi_info_set_json_tests
+    Catch2::Catch2
+    mpi-extensions
+    ${MPI_CXX_LIBRARIES}
+)
+target_include_directories(mpi_info_set_json_tests PRIVATE
+    ${MPI_CXX_INCLUDE_DIRS}
+    ../src
+)
+catch_discover_tests(mpi_info_set_json_tests)
 

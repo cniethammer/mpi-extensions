@@ -28,7 +28,7 @@
 
 #include "MPI_Info_set_json.h"
 
-#include <json.h>
+#include <json-c/json.h>
 
 int MPI_Info_set_json(MPI_Info info, const char *json_str) {
   int ret = PMPI_Info_set_json(info, json_str);

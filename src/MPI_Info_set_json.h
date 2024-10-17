@@ -36,7 +36,7 @@ extern "C" {
 #endif
 
 
-/** Compute dimensions based on weights
+/** MPI_Info_set_json adds (key,value) pairs to an MPI info input as a JSON string
  *
  * MPI_Info_set_json sets info key-value pairs for an info object from a JSON string
  *

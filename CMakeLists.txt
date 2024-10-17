@@ -4,6 +4,8 @@ project(mpi-extensions)
 find_package(MPI REQUIRED)
 include_directories( ${MPI_C_INCLUDE_DIRS} )
 
+find_package(json-c REQUIRED)
+
 include(CTest)
 
 add_library(mpi-extensions SHARED)

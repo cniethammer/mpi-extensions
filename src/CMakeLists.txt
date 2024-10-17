@@ -1,4 +1,3 @@
-find_package(json-c CONFIG)
 target_link_libraries(mpi-extensions PRIVATE json-c::json-c)
 
 target_sources(mpi-extensions

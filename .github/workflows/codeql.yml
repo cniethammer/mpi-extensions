@@ -36,8 +36,12 @@ jobs:
     - name: Install json-c
       run: sudo apt-get install libjson-c-dev
 
-    - name: Install Catch2
-      run: sudo apt-get install catch2
+    - name: Install Catch2 v3 from git repo
+      run: |
+        git clone https://github.com/catchorg/Catch2.git
+        cd Catch2
+        cmake -B build -S . -DBUILD_TESTING=OFF
+        sudo cmake --build build/ --target install
 
     - name: Autobuild
       uses: github/codeql-action/autobuild@v3

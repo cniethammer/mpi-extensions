@@ -101,3 +101,24 @@ TEST_CASE("MPI_Info_set_json set multiple pairs", "[MPI_Info_set_json]") {
   MPI_Info_free(&info);
 }
 
+TEST_CASE("MPI_Info_set_json invalid JSON returns failure", "[MPI_Info_set_json]") {
+  MPI_Info info;
+  MPI_Info_create(&info);
+
+  SECTION("malformed JSON") {
+    int ret = MPI_Info_set_json(info, "{'key1': ");
+    REQUIRE(ret != MPI_SUCCESS);
+  }
+
+  SECTION("whitespace-only string") {
+    int ret = MPI_Info_set_json(info, "   ");
+    REQUIRE(ret != MPI_SUCCESS);
+  }
+
+  int nkeys = -1;
+  MPI_Info_get_nkeys(info, &nkeys);
+  REQUIRE(nkeys == 0);
+
+  MPI_Info_free(&info);
+}
+

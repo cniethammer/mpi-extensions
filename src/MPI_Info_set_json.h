@@ -45,6 +45,7 @@ extern "C" {
  *
  * @param[inout] info
  * @param[in]    json_str JSON string with dict containing key: value pairs
+ * @return MPI_SUCCESS on success, MPI_ERR_ARG if json_str cannot be parsed
  */
 int MPI_Info_set_json(MPI_Info info, const char *json_str);
 

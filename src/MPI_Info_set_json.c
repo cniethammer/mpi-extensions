@@ -43,6 +43,10 @@ int PMPI_Info_set_json(MPI_Info info, const char *json_str) {
   }
 
   struct json_object *jobj = json_tokener_parse(json_str);
+  if (NULL == jobj) {
+    /* parse error (invalid or whitespace-only JSON input) */
+    return MPI_ERR_ARG;
+  }
 
   json_object_object_foreach(jobj, key, val) {
     const char *value = json_object_get_string(val);

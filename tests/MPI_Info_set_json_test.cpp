@@ -122,3 +122,34 @@ TEST_CASE("MPI_Info_set_json invalid JSON returns failure", "[MPI_Info_set_json]
   MPI_Info_free(&info);
 }
 
+TEST_CASE("MPI_Info_set_json non-object JSON returns failure", "[MPI_Info_set_json]") {
+  MPI_Info info;
+  MPI_Info_create(&info);
+
+  SECTION("array") {
+    int ret = MPI_Info_set_json(info, "[1, 2]");
+    REQUIRE(ret != MPI_SUCCESS);
+  }
+
+  SECTION("number") {
+    int ret = MPI_Info_set_json(info, "42");
+    REQUIRE(ret != MPI_SUCCESS);
+  }
+
+  SECTION("string") {
+    int ret = MPI_Info_set_json(info, "\"value1\"");
+    REQUIRE(ret != MPI_SUCCESS);
+  }
+
+  SECTION("null") {
+    int ret = MPI_Info_set_json(info, "null");
+    REQUIRE(ret != MPI_SUCCESS);
+  }
+
+  int nkeys = -1;
+  MPI_Info_get_nkeys(info, &nkeys);
+  REQUIRE(nkeys == 0);
+
+  MPI_Info_free(&info);
+}
+

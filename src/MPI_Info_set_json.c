@@ -47,6 +47,11 @@ int PMPI_Info_set_json(MPI_Info info, const char *json_str) {
     /* parse error (invalid or whitespace-only JSON input) */
     return MPI_ERR_ARG;
   }
+  if (!json_object_is_type(jobj, json_type_object)) {
+    /* valid JSON, but not a dict of key: value pairs */
+    json_object_put(jobj);
+    return MPI_ERR_ARG;
+  }
 
   json_object_object_foreach(jobj, key, val) {
     const char *value = json_object_get_string(val);

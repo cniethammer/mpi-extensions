@@ -23,31 +23,26 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
+      uses: github/codeql-action/init@v4
       with:
         languages: ${{ matrix.language }}
+        build-mode: manual
 
-    - name: Install Open MPI
-      run: sudo apt-get install libopenmpi-dev
-
-    - name: Install json-c
-      run: sudo apt-get install libjson-c-dev
-
-    - name: Install Catch2 v3 from git repo
+    - name: Install dependencies (Open MPI, json-c)
       run: |
-        git clone https://github.com/catchorg/Catch2.git
-        cd Catch2
-        cmake -B build -S . -DBUILD_TESTING=OFF
-        sudo cmake --build build/ --target install
+        sudo apt-get update
+        sudo apt-get install -y libopenmpi-dev libjson-c-dev
 
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v3
+    - name: Build library
+      run: |
+        cmake -B build -S . -DBUILD_TESTING=OFF
+        cmake --build build
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
+      uses: github/codeql-action/analyze@v4
       with:
         category: "/language:${{matrix.language}}"
 

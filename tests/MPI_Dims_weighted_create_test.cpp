@@ -34,7 +34,7 @@
 #include <array>
 #include <cstdint>
 
-#include "MPI_Dims_weighted_create.h"
+#include <mpi-extensions/MPI_Dims_weighted_create.h>
 #include <mpi.h>
 
 int main(int argc, char *argv[]) {

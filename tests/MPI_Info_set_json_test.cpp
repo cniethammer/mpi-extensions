@@ -36,7 +36,7 @@
 #include <cstdint>
 #include <vector>
 
-#include "MPI_Info_set_json.h"
+#include <mpi-extensions/MPI_Info_set_json.h>
 #include <mpi.h>
 
 int main(int argc, char *argv[]) {

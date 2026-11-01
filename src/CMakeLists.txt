@@ -1,6 +1,4 @@
-target_link_libraries(mpi-extensions PRIVATE json-c::json-c)
-
-install(FILES mpi-extensions.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+add_library(mpi-extensions SHARED)
 
 target_sources(mpi-extensions
     PRIVATE
@@ -9,11 +7,19 @@ target_sources(mpi-extensions
     PUBLIC
         FILE_SET HEADERS
         FILES
+            mpi-extensions.h
             MPI_Dims_weighted_create.h
             MPI_Info_set_json.h
 )
 
 target_link_libraries(mpi-extensions
+    PRIVATE
+        json-c::json-c
     PUBLIC
-        ${MPI_CXX_LIBRARIES}
+        MPI::MPI_C
+)
+
+install(TARGETS mpi-extensions
+    EXPORT mpi-extensionsTargets
+    FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
 )

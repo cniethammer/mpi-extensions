@@ -1,0 +1,55 @@
+name: "Unit tests"
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+  workflow_dispatch:
+
+jobs:
+  unit-tests:
+    name: Unit tests (${{ matrix.mpi }})
+    runs-on: ubuntu-24.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - mpi: openmpi
+            mpi-package: libopenmpi-dev
+          - mpi: mpich
+            mpi-package: libmpich-dev
+
+    env:
+      # MPI libraries leak memory by design; keep ASan for memory errors only
+      ASAN_OPTIONS: detect_leaks=0
+      UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
+      # Open MPI's memory patcher conflicts with ASan's malloc interception
+      # and crashes MPI_Init; ignored by MPICH
+      OMPI_MCA_memory: ^patcher
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install dependencies (${{ matrix.mpi }}, json-c, Catch2)
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ${{ matrix.mpi-package }} libjson-c-dev catch2
+
+    - name: Configure
+      run: >
+        cmake -B build -S .
+        -DCMAKE_BUILD_TYPE=Debug
+        -DBUILD_TESTING=ON
+        "-DCMAKE_C_FLAGS=-fsanitize=address,undefined -fno-omit-frame-pointer"
+        "-DCMAKE_CXX_FLAGS=-fsanitize=address,undefined -fno-omit-frame-pointer"
+        "-DCMAKE_EXE_LINKER_FLAGS=-fsanitize=address,undefined"
+        "-DCMAKE_SHARED_LINKER_FLAGS=-fsanitize=address,undefined"
+
+    - name: Build
+      run: cmake --build build --parallel
+
+    - name: Run unit tests
+      run: ctest --test-dir build --output-on-failure

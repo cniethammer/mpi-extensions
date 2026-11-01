@@ -34,6 +34,7 @@
 
 #include <array>
 #include <cstdint>
+#include <vector>
 
 #include "MPI_Info_set_json.h"
 #include <mpi.h>
@@ -65,9 +66,9 @@ TEST_CASE("MPI_Info_set_json set single pair", "[MPI_Info_set_json]") {
   REQUIRE( (flag) );
   REQUIRE( valuelen == 6);
 
-  char *value = new char[valuelen+1];
-  MPI_Info_get(info, "key1", valuelen, value, &flag);
-  REQUIRE_THAT(value, Catch::Matchers::Equals("value1"));
+  std::vector<char> value(valuelen + 1);
+  MPI_Info_get(info, "key1", valuelen, value.data(), &flag);
+  REQUIRE_THAT(value.data(), Catch::Matchers::Equals("value1"));
 
   MPI_Info_free(&info);
 }
@@ -84,19 +85,17 @@ TEST_CASE("MPI_Info_set_json set multiple pairs", "[MPI_Info_set_json]") {
   REQUIRE( (flag) );
   REQUIRE( valuelen == 6);
 
-  char *value = new char[valuelen+1];
-  MPI_Info_get(info, "key1", valuelen, value, &flag);
-  REQUIRE_THAT(value, Catch::Matchers::Equals("value1"));
-  delete value;
+  std::vector<char> value(valuelen + 1);
+  MPI_Info_get(info, "key1", valuelen, value.data(), &flag);
+  REQUIRE_THAT(value.data(), Catch::Matchers::Equals("value1"));
 
   MPI_Info_get_valuelen(info, "key2", &valuelen, &flag);
   REQUIRE( (flag) );
   REQUIRE( valuelen == 6);
 
-  value = new char[valuelen+1];
-  MPI_Info_get(info, "key2", valuelen, value, &flag);
-  REQUIRE_THAT(value, Catch::Matchers::Equals("value2"));
-  delete value;
+  value.assign(valuelen + 1, '\0');
+  MPI_Info_get(info, "key2", valuelen, value.data(), &flag);
+  REQUIRE_THAT(value.data(), Catch::Matchers::Equals("value2"));
 
   MPI_Info_free(&info);
 }

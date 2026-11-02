@@ -26,40 +26,35 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "MPI_Info_set_json.h"
+#ifndef SRC_MPIX_INFO_SET_JSON_H_
+#define SRC_MPIX_INFO_SET_JSON_H_
 
-#include <json-c/json.h>
+#include <mpi.h>
 
-int MPI_Info_set_json(MPI_Info info, const char *json_str) {
-  int ret = PMPI_Info_set_json(info, json_str);
-  return ret;
+#if __cplusplus
+extern "C" {
+#endif
+
+
+/** MPIX_Info_set_json adds (key,value) pairs to an MPI info input as a JSON string
+ *
+ * MPIX_Info_set_json sets info key-value pairs for an info object from a JSON string
+ *
+ * Example call:
+ *   MPIX_Info_set_json(info, "{'key1': 'value1', 'key2': 'value2'}");
+ *
+ * @param[inout] info
+ * @param[in]    json_str JSON string with dict containing key: value pairs
+ * @return MPI_SUCCESS on success, MPI_ERR_ARG if json_str cannot be parsed
+ *         or is not a JSON object
+ */
+int MPIX_Info_set_json(MPI_Info info, const char *json_str);
+
+/** PMPI interface corresponding to MPI call */
+int PMPIX_Info_set_json(MPI_Info info, const char *json_str);
+
+#if __cplusplus
 }
+#endif
 
-int PMPI_Info_set_json(MPI_Info info, const char *json_str) {
-  int ret = MPI_SUCCESS;
-
-  if ('\0' == json_str[0]) {
-    return MPI_SUCCESS;
-  }
-
-  struct json_object *jobj = json_tokener_parse(json_str);
-  if (NULL == jobj) {
-    /* parse error (invalid or whitespace-only JSON input) */
-    return MPI_ERR_ARG;
-  }
-  if (!json_object_is_type(jobj, json_type_object)) {
-    /* valid JSON, but not a dict of key: value pairs */
-    json_object_put(jobj);
-    return MPI_ERR_ARG;
-  }
-
-  json_object_object_foreach(jobj, key, val) {
-    const char *value = json_object_get_string(val);
-    ret = MPI_Info_set(info, key, value);
-    if (MPI_SUCCESS != ret) {
-      return ret;
-    }
-  }
-
-  return ret;
-}
+#endif // SRC_MPIX_INFO_SET_JSON_H_

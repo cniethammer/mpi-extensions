@@ -1,5 +1,5 @@
 // Example: set an MPI info (key, value) pair from the command line via
-// MPI_Info_set_json and read it back.
+// MPIX_Info_set_json and read it back.
 //
 // Usage: mpirun -n 2 ./info_set_json_example <key> <value>
 
@@ -60,10 +60,10 @@ int main(int argc, char *argv[]) {
     MPI_Info info;
     MPI_Info_create(&info);
 
-    int err = MPI_Info_set_json(info, json.c_str());
+    int err = MPIX_Info_set_json(info, json.c_str());
     if (err != MPI_SUCCESS) {
         if (rank == 0)
-            std::fprintf(stderr, "MPI_Info_set_json failed for input: %s\n",
+            std::fprintf(stderr, "MPIX_Info_set_json failed for input: %s\n",
                          json.c_str());
         MPI_Info_free(&info);
         MPI_Finalize();

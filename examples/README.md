@@ -5,7 +5,7 @@ This directory contains examples showing the usage of the various extensions pro
 
 | Example | Description |
 | ------- | ----------- |
-| [info_set_json](info_set_json/) | Set an MPI info (key, value) pair from the command line with `MPI_Info_set_json` |
+| [info_set_json](info_set_json/) | Set an MPI info (key, value) pair from the command line with `MPIX_Info_set_json` |
 
 ## Prerequisites: install mpi-extensions
 
@@ -50,7 +50,7 @@ Alternatively:
 ```cmake
 project(my_app LANGUAGES C CXX)
 
-find_package(mpi-extensions 0.1 REQUIRED)
+find_package(mpi-extensions 0.2 REQUIRED)
 find_package(MPI REQUIRED COMPONENTS CXX)   # only needed for C++ code
 
 add_executable(my_app main.cpp)
@@ -61,7 +61,7 @@ target_link_libraries(my_app PRIVATE
 ```
 
 Then include `<mpi-extensions.h>` (or an individual header such as
-`<MPI_Info_set_json.h>`). The target provides the include directory and MPI.
+`<MPIX_Info_set_json.h>`). The target provides the include directory and MPI.
 
 The C language must be enabled in your project, even for pure C++ code, because
 the library links against `MPI::MPI_C`, which CMake's FindMPI only provides when

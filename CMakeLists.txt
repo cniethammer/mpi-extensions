@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.28)
 project(mpi-extensions
-    VERSION 0.1
+    VERSION 0.2
     DESCRIPTION "Extensions library for the MPI interface"
     LANGUAGES C CXX
 )

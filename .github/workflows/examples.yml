@@ -1,0 +1,65 @@
+name: "Examples"
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+  workflow_dispatch:
+
+# Builds the examples against an installed mpi-extensions library, following
+# examples/README.md, for both a default-prefix and a custom-prefix install.
+jobs:
+  examples:
+    name: Examples (${{ matrix.mpi }}, ${{ matrix.install }} prefix)
+    runs-on: ubuntu-24.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        mpi: [ openmpi, mpich ]
+        install: [ default, custom ]
+        include:
+          - mpi: openmpi
+            mpi-package: libopenmpi-dev
+          - mpi: mpich
+            mpi-package: libmpich-dev
+
+    env:
+      INSTALL_DIR: ${{ github.workspace }}/../mpi-extensions-install
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install dependencies (${{ matrix.mpi }}, json-c)
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ${{ matrix.mpi-package }} libjson-c-dev
+
+    - name: Build mpi-extensions
+      run: |
+        cmake -B build -S . -DBUILD_TESTING=OFF
+        cmake --build build --parallel
+
+    - name: Install mpi-extensions (default prefix)
+      if: matrix.install == 'default'
+      run: |
+        sudo cmake --install build
+        sudo ldconfig
+
+    - name: Install mpi-extensions (custom prefix)
+      if: matrix.install == 'custom'
+      run: |
+        cmake --install build --prefix "$INSTALL_DIR"
+        echo "CMAKE_PREFIX_ARG=-DCMAKE_PREFIX_PATH=$INSTALL_DIR" >> "$GITHUB_ENV"
+
+    - name: Build examples
+      run: |
+        for dir in examples/*/; do
+          [ -f "$dir/CMakeLists.txt" ] || continue
+          echo "::group::Build $dir"
+          cmake -S "$dir" -B "$dir/build" $CMAKE_PREFIX_ARG
+          cmake --build "$dir/build" --parallel
+          echo "::endgroup::"
+        done

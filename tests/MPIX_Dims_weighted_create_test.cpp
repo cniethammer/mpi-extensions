@@ -127,6 +127,38 @@ TEST_CASE("product of dims must be equal nnodes",
   REQUIRE(ret == MPI_SUCCESS);
 }
 
+// Regression test: the divisor list used to be a fixed stack array of 1344
+// entries (the maximum for 9-digit numbers), which overflowed for valid int
+// inputs with more divisors. Expected values are the unique optima, verified
+// by brute force.
+TEST_CASE("large nnodes with many divisors", "[MPIX_Dims_weighted_create]") {
+  struct Case {
+    int nnodes;
+    int ndims;
+    std::array<int, 3> expected;
+  };
+  const Case cases[] = {
+      {1102701600, 2, {33264, 33150, 0}}, /* 1440 divisors */
+      {1396755360, 2, {37620, 37128, 0}}, /* 1536 divisors */
+      {2095133040, 2, {46189, 45360, 0}}, /* 1600 divisors, max for int32 */
+      {2095133040, 3, {1292, 1287, 1260}},
+      {2147395600, 2, {46340, 46340, 0}}, /* perfect square 46340^2 */
+      {2147395600, 3, {1324, 1324, 1225}},
+      {2147483647, 2, {2147483647, 1, 0}}, /* INT_MAX, prime */
+  };
+
+  for (const Case &c : cases) {
+    CAPTURE(c.nnodes, c.ndims);
+    std::array<int, 3> dims = {0, 0, 0};
+    int ret = MPIX_Dims_weighted_create(c.nnodes, c.ndims, MPIX_EQUAL_WEIGHTS,
+                                        dims.data());
+    REQUIRE(ret == MPI_SUCCESS);
+    for (int d = 0; d < c.ndims; ++d) {
+      CHECK(dims[d] == c.expected[d]);
+    }
+  }
+}
+
 TEST_CASE("dim weights", "[MPIX_Dims_weighted_create]") {
   SECTION("2D example 1") {
     int nnodes = 12;

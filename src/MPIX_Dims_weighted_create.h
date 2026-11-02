@@ -68,6 +68,10 @@ extern "C" {
  * become \f$\omega_i = \frac{1}{g_i}\f$, assuming equal halo widths in all
  * dimensions.
  *
+ * To weight all dimensions equally, pass MPIX_EQUAL_WEIGHTS. A NULL
+ * dim_weights is not a valid way to request equal weights: for ndims > 0 the
+ * pointer is not checked and passing NULL results in undefined behavior.
+ *
  * @param[in] nnodes number of processes
  * @param[in] ndims number of dimensions
  * @param[in] dim_weights weight factors for dimensions or MPIX_EQUAL_WEIGHTS;
@@ -75,6 +79,14 @@ extern "C" {
  * @param[in,out] dims array of size ndims; on input, positive entries are
  *            fixed dimensions and zero entries are to be computed; on output,
  *            the computed optimal values for the dimensions
+ *
+ * @return MPI_SUCCESS on success, otherwise one of
+ *   - MPI_ERR_ARG if nnodes < 1
+ *   - MPI_ERR_DIMS if ndims < 0, if an entry of dims is negative, if nnodes is
+ *     not a multiple of the product of the fixed (positive) entries of dims,
+ *     or if ndims == 0 and nnodes > 1
+ *   - MPI_ERR_INTERN if the product of the fixed entries of dims overflows int
+ *   - MPI_ERR_NO_MEM if memory allocation fails
  */
 int MPIX_Dims_weighted_create(const int nnodes, const int ndims,
                               const double *dim_weights, int *dims);

@@ -35,44 +35,74 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/** maximum number of divisors for int32 (int max~10e9) according to
- * http://oeis.org/A066150 is 1344 */
-#define MAX_DIVISORS_FOR_INT32 1344
+/** Initial capacity for the divisors <= sqrt(n). 32 covers every n < 10^4
+ * without reallocation; the worst case for 32-bit int (2095133040, 1600
+ * divisors, 800 of them <= sqrt(n)) needs five doublings. */
+#define DIVISORS_INITIAL_CAPACITY 32
 
 /** Return list of divisors
  *
- * @param[in] p number for which divisors shall be computed
- * @param[out] divisors list of divisors in descending order, passed array must
- *                      provide enought space for all divisors
- * @return number of divisors if succesful, otherwise 0
+ * @param[in] n number for which divisors shall be computed, n >= 1
+ * @param[out] divisors newly allocated list of all divisors of n in
+ *                      descending order (last entry is 1); must be released
+ *                      with free() by the caller
+ * @return number of divisors if successful, 0 if memory allocation failed
  */
-static int calc_divisors(int n, int *divisors) {
-  int i = 0;
-  /* compute divisors up to sqrt(n) and store them in ascending order */
-  divisors[i++] = 1;
-  if (n % 2 == 0) {
-    divisors[i++] = 2;
-    for (int f = 3; f <= floor(sqrt(n)); f++) {
-      if (n % f == 0) {
-        divisors[i++] = f;
-      }
-    }
-
-  } else {
-    for (int f = 3; f <= floor(sqrt(n)); f += 2) {
-      if (n % f == 0) {
-        divisors[i++] = f;
-      }
-    }
+static int calc_divisors(int n, int **divisors) {
+  *divisors = NULL;
+  int capacity = DIVISORS_INITIAL_CAPACITY;
+  int *divs = malloc(capacity * sizeof(int));
+  if (NULL == divs) {
+    return 0;
   }
 
-  /* compute remaining divisors from known divisors <= sqrt(n)
-   * and reorder list in desceding order. */
-  for (int j = i - 1; j >= 0; j--, i++) {
-    divisors[i] = divisors[j];
-    divisors[j] = n / divisors[i];
+  /* collect divisors f <= sqrt(n) in ascending order; odd n has no even
+   * divisors. f <= n / f avoids both sqrt() and overflow of f * f. */
+  int nsmall = 0;
+  const int step = (n % 2 == 0) ? 1 : 2;
+  for (int f = 1; f <= n / f; f += step) {
+    if (n % f != 0) {
+      continue;
+    }
+    if (nsmall == capacity) {
+      capacity *= 2;
+      int *tmp = realloc(divs, capacity * sizeof(int));
+      if (NULL == tmp) {
+        free(divs);
+        return 0;
+      }
+      divs = tmp;
+    }
+    divs[nsmall++] = f;
   }
-  return i;
+
+  /* each divisor f <= sqrt(n) pairs with n / f >= sqrt(n); for a perfect
+   * square sqrt(n) pairs with itself and must only be listed once. */
+  const int largest_small = divs[nsmall - 1];
+  const int total = 2 * nsmall - ((largest_small == n / largest_small) ? 1 : 0);
+
+  int *tmp = realloc(divs, total * sizeof(int));
+  if (NULL == tmp) {
+    free(divs);
+    return 0;
+  }
+  divs = tmp;
+
+  /* reorder in place into descending order:
+   * [n/divs[0], ..., n/divs[nsmall-1], divs[nsmall-1], ..., divs[0]]
+   * 1. move the small divisors reversed to the tail. Position total-1-k >= k
+   *    always holds, so no unread entry is overwritten.
+   * 2. fill the head with the complementary large divisors, reading only
+   *    from the tail (indices >= nsmall). */
+  for (int k = 0; k < nsmall; k++) {
+    divs[total - 1 - k] = divs[k];
+  }
+  for (int k = 0; k < total - nsmall; k++) {
+    divs[k] = n / divs[total - 1 - k];
+  }
+
+  *divisors = divs;
+  return total;
 }
 
 /** recursive factorization optimization looping over (remaining) divisors for
@@ -227,10 +257,13 @@ int PMPIX_Dims_weighted_create(const int nnodes, const int ndims,
     tmp_dims[i] = 1;
   }
 
-  int divisors[MAX_DIVISORS_FOR_INT32];
-  calc_divisors(nnodes, divisors);
+  int *divisors = NULL;
+  if (0 == calc_divisors(nnodes, &divisors)) {
+    return MPI_ERR_NO_MEM;
+  }
   optdims(nnodes, divisors, ndims, 0, tmp_dim_weights, tmp_dims, &min_sum,
           min_dims, &min_diff);
+  free(divisors);
 
   for (int i = 0; i < ndims; i++) {
     dims[permutation[i]] = min_dims[i];

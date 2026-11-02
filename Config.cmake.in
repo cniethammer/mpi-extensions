@@ -1,8 +1,11 @@
 @PACKAGE_INIT@
 
+# The library links MPI::MPI_C publicly. Request the C component explicitly:
+# FindMPI otherwise only searches the consumer's enabled languages, and a
+# consumer without C enabled would fail at link time instead of configure time.
+include(CMakeFindDependencyMacro)
+find_dependency(MPI COMPONENTS C)
+
 include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
 
 check_required_components(@PROJECT_NAME@)
-
-include(CMakeFindDependencyMacro)
-find_dependency(MPI REQUIRED)

@@ -36,7 +36,7 @@
 #include <cstdint>
 #include <vector>
 
-#include <MPI_Info_set_json.h>
+#include <MPIX_Info_set_json.h>
 #include <mpi.h>
 
 int main(int argc, char *argv[]) {
@@ -46,18 +46,18 @@ int main(int argc, char *argv[]) {
   return result;
 }
 
-TEST_CASE("MPI_Info_set_json is defined", "[MPI_Info_set_json]") {
+TEST_CASE("MPIX_Info_set_json is defined", "[MPIX_Info_set_json]") {
   MPI_Info info;
   MPI_Info_create(&info);
-  int ret = MPI_Info_set_json(info, "");
+  int ret = MPIX_Info_set_json(info, "");
   MPI_Info_free(&info);
   REQUIRE(ret == MPI_SUCCESS);
 }
 
-TEST_CASE("MPI_Info_set_json set single pair", "[MPI_Info_set_json]") {
+TEST_CASE("MPIX_Info_set_json set single pair", "[MPIX_Info_set_json]") {
   MPI_Info info;
   MPI_Info_create(&info);
-  int ret = MPI_Info_set_json(info, "{'key1': 'value1'}");
+  int ret = MPIX_Info_set_json(info, "{'key1': 'value1'}");
   REQUIRE(ret == MPI_SUCCESS);
 
   int valuelen = 0;
@@ -73,10 +73,10 @@ TEST_CASE("MPI_Info_set_json set single pair", "[MPI_Info_set_json]") {
   MPI_Info_free(&info);
 }
 
-TEST_CASE("MPI_Info_set_json set multiple pairs", "[MPI_Info_set_json]") {
+TEST_CASE("MPIX_Info_set_json set multiple pairs", "[MPIX_Info_set_json]") {
   MPI_Info info;
   MPI_Info_create(&info);
-  int ret = MPI_Info_set_json(info, "{'key1': 'value1', 'key2': 'value2'}");
+  int ret = MPIX_Info_set_json(info, "{'key1': 'value1', 'key2': 'value2'}");
   REQUIRE(ret == MPI_SUCCESS);
 
   int valuelen = 0;
@@ -100,17 +100,17 @@ TEST_CASE("MPI_Info_set_json set multiple pairs", "[MPI_Info_set_json]") {
   MPI_Info_free(&info);
 }
 
-TEST_CASE("MPI_Info_set_json invalid JSON returns failure", "[MPI_Info_set_json]") {
+TEST_CASE("MPIX_Info_set_json invalid JSON returns failure", "[MPIX_Info_set_json]") {
   MPI_Info info;
   MPI_Info_create(&info);
 
   SECTION("malformed JSON") {
-    int ret = MPI_Info_set_json(info, "{'key1': ");
+    int ret = MPIX_Info_set_json(info, "{'key1': ");
     REQUIRE(ret != MPI_SUCCESS);
   }
 
   SECTION("whitespace-only string") {
-    int ret = MPI_Info_set_json(info, "   ");
+    int ret = MPIX_Info_set_json(info, "   ");
     REQUIRE(ret != MPI_SUCCESS);
   }
 
@@ -121,27 +121,27 @@ TEST_CASE("MPI_Info_set_json invalid JSON returns failure", "[MPI_Info_set_json]
   MPI_Info_free(&info);
 }
 
-TEST_CASE("MPI_Info_set_json non-object JSON returns failure", "[MPI_Info_set_json]") {
+TEST_CASE("MPIX_Info_set_json non-object JSON returns failure", "[MPIX_Info_set_json]") {
   MPI_Info info;
   MPI_Info_create(&info);
 
   SECTION("array") {
-    int ret = MPI_Info_set_json(info, "[1, 2]");
+    int ret = MPIX_Info_set_json(info, "[1, 2]");
     REQUIRE(ret != MPI_SUCCESS);
   }
 
   SECTION("number") {
-    int ret = MPI_Info_set_json(info, "42");
+    int ret = MPIX_Info_set_json(info, "42");
     REQUIRE(ret != MPI_SUCCESS);
   }
 
   SECTION("string") {
-    int ret = MPI_Info_set_json(info, "\"value1\"");
+    int ret = MPIX_Info_set_json(info, "\"value1\"");
     REQUIRE(ret != MPI_SUCCESS);
   }
 
   SECTION("null") {
-    int ret = MPI_Info_set_json(info, "null");
+    int ret = MPIX_Info_set_json(info, "null");
     REQUIRE(ret != MPI_SUCCESS);
   }
 

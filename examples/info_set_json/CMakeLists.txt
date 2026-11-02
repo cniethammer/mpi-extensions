@@ -5,7 +5,7 @@ project(info_set_json_example LANGUAGES C CXX)
 
 # Locate the installed library, e.g. configure with
 #   cmake -B build -DCMAKE_PREFIX_PATH=/path/to/mpi-extensions/install
-find_package(mpi-extensions 0.1 REQUIRED)
+find_package(mpi-extensions 0.2 REQUIRED)
 
 # C++ code that includes mpi.h must also link MPI::MPI_CXX: some MPI
 # implementations (e.g. Open MPI 4.x) pull in C++ bindings from mpi.h.

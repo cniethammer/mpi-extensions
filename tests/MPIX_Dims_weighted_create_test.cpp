@@ -34,7 +34,7 @@
 #include <array>
 #include <cstdint>
 
-#include <MPI_Dims_weighted_create.h>
+#include <MPIX_Dims_weighted_create.h>
 #include <mpi.h>
 
 int main(int argc, char *argv[]) {
@@ -43,31 +43,31 @@ int main(int argc, char *argv[]) {
   MPI_Finalize();
   return result;
 }
-TEST_CASE("MPI_EQUAL_WEIGHTS is defined", "[MPI_Dims_weighted_create]") {
-  REQUIRE(MPI_EQUAL_WEIGHTS == MPI_EQUAL_WEIGHTS);
+TEST_CASE("MPIX_EQUAL_WEIGHTS is defined", "[MPIX_Dims_weighted_create]") {
+  REQUIRE(MPIX_EQUAL_WEIGHTS == MPIX_EQUAL_WEIGHTS);
 }
 
 TEST_CASE("error checks for wrong input working",
-          "[MPI_Dims_weighted_create]") {
+          "[MPIX_Dims_weighted_create]") {
 
   int nnodes = 1;
   int ndims = 1;
-  double *dim_weights = MPI_EQUAL_WEIGHTS;
+  double *dim_weights = MPIX_EQUAL_WEIGHTS;
   int *dims = NULL;
 
   SECTION("if nnodes less than one return failure") {
     nnodes = 0;
-    int ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
+    int ret = MPIX_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
     REQUIRE(ret != MPI_SUCCESS);
     nnodes = -1;
-    ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
+    ret = MPIX_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
     REQUIRE(ret != MPI_SUCCESS);
   }
 
   SECTION("if ndims less than zero return failure") {
     nnodes = 1;
     ndims = -1;
-    int ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
+    int ret = MPIX_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
     REQUIRE(ret != MPI_SUCCESS);
   }
 
@@ -75,7 +75,7 @@ TEST_CASE("error checks for wrong input working",
     nnodes = 7;
     ndims = 2;
     int dims[] = {2, 3};
-    int ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
+    int ret = MPIX_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
     REQUIRE(ret != MPI_SUCCESS);
   }
 
@@ -83,18 +83,18 @@ TEST_CASE("error checks for wrong input working",
     nnodes = 6;
     ndims = 2;
     int dims[] = {0, -3};
-    int ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
+    int ret = MPIX_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
     REQUIRE(ret != MPI_SUCCESS);
   }
 }
 
 TEST_CASE("one node returns all-once dims vector and success",
-          "[MPI_Dims_weighted_create]") {
+          "[MPIX_Dims_weighted_create]") {
   int nnodes = 1;
   int ndims = 5;
-  double *dim_weights = MPI_EQUAL_WEIGHTS;
+  double *dim_weights = MPIX_EQUAL_WEIGHTS;
   int dims[5] = {0, 0, 0, 0, 0};
-  int ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
+  int ret = MPIX_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
 
   for (int d = 0; d < ndims; ++d) {
     REQUIRE(dims[d] == 1);
@@ -103,22 +103,22 @@ TEST_CASE("one node returns all-once dims vector and success",
 }
 
 TEST_CASE("one node and zero ndims return success",
-          "[MPI_Dims_weighted_create]") {
+          "[MPIX_Dims_weighted_create]") {
   int nnodes = 1;
   int ndims = 0;
-  double *dim_weights = MPI_EQUAL_WEIGHTS;
+  double *dim_weights = MPIX_EQUAL_WEIGHTS;
   int *dims = NULL;
-  int ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
+  int ret = MPIX_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
   REQUIRE(ret == MPI_SUCCESS);
 }
 
 TEST_CASE("product of dims must be equal nnodes",
-          "[MPI_Dims_weighted_create]") {
+          "[MPIX_Dims_weighted_create]") {
   int nnodes = 30;
   int ndims = 3;
-  double *dim_weights = MPI_EQUAL_WEIGHTS;
+  double *dim_weights = MPIX_EQUAL_WEIGHTS;
   int dims[] = {0, 0, 0};
-  int ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
+  int ret = MPIX_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
   int dims_product = 1;
   for (int d = 0; d < ndims; ++d) {
     dims_product *= dims[d];
@@ -127,13 +127,13 @@ TEST_CASE("product of dims must be equal nnodes",
   REQUIRE(ret == MPI_SUCCESS);
 }
 
-TEST_CASE("dim weights", "[MPI_Dims_weighted_create]") {
+TEST_CASE("dim weights", "[MPIX_Dims_weighted_create]") {
   SECTION("2D example 1") {
     int nnodes = 12;
     int ndims = 2;
     double dim_weights[] = {1. / 6., 1. / 18.};
     int dims[] = {0, 0};
-    int ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
+    int ret = MPIX_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
     REQUIRE(dims[0] == 2);
     REQUIRE(dims[1] == 6);
     REQUIRE(ret == MPI_SUCCESS);
@@ -143,7 +143,7 @@ TEST_CASE("dim weights", "[MPI_Dims_weighted_create]") {
     int ndims = 2;
     double dim_weights[] = {1. / 4., 1. / 12.};
     int dims[] = {0, 0};
-    int ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
+    int ret = MPIX_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
     REQUIRE(dims[0] == 1);
     REQUIRE(dims[1] == 3);
     REQUIRE(ret == MPI_SUCCESS);
@@ -153,7 +153,7 @@ TEST_CASE("dim weights", "[MPI_Dims_weighted_create]") {
     int ndims = 3;
     double dim_weights[] = {1. / 40., 1. / 240., 1. / 30.};
     int dims[] = {0, 0, 0};
-    int ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
+    int ret = MPIX_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
     REQUIRE(dims[0] == 4);
     REQUIRE(dims[1] == 24);
     REQUIRE(dims[2] == 3);
@@ -162,23 +162,23 @@ TEST_CASE("dim weights", "[MPI_Dims_weighted_create]") {
 }
 
 // TODO
-TEST_CASE("fixed dimensions stay", "[.][MPI_Dims_weighted_create]") {
+TEST_CASE("fixed dimensions stay", "[.][MPIX_Dims_weighted_create]") {
   int nnodes = 1;
   int ndims = 1;
-  double *dim_weights = MPI_EQUAL_WEIGHTS;
+  double *dim_weights = MPIX_EQUAL_WEIGHTS;
   int *dims = NULL;
   int ret = MPI_SUCCESS;
 
   nnodes = 30;
   ndims = 3;
   dims = std::array<int, 3>({3, 0, 0}).data();
-  ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
+  ret = MPIX_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
   REQUIRE(dims[0] == 3);
   dims = std::array<int, 3>({0, 3, 0}).data();
-  ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
+  ret = MPIX_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
   REQUIRE(dims[1] == 3);
   dims = std::array<int, 3>({0, 0, 3}).data();
-  ret = MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
+  ret = MPIX_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
   REQUIRE(dims[2] == 3);
   REQUIRE(ret == MPI_SUCCESS);
 }

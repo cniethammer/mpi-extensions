@@ -26,20 +26,23 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef SRC_MPI_DIMS_WEIGHTED_CREATE_H_
-#define SRC_MPI_DIMS_WEIGHTED_CREATE_H_
+#ifndef SRC_MPIX_DIMS_WEIGHTED_CREATE_H_
+#define SRC_MPIX_DIMS_WEIGHTED_CREATE_H_
 
 #if __cplusplus
 extern "C" {
 #endif
 
-/** constant representing equal weights for all dimensions in a call to \
-   MPI_Dims_weighted_create */
-#define MPI_EQUAL_WEIGHTS 0
+/** constant representing equal weights for all dimensions in a call to
+ * MPIX_Dims_weighted_create
+ *
+ * Like MPI_UNWEIGHTED ((int*)10) in the MPI 5.0 ABI, this is a non-null
+ * sentinel pointer value, so it cannot be confused with a NULL pointer. */
+#define MPIX_EQUAL_WEIGHTS ((double *)10)
 
 /** Compute dimensions based on weights
  *
- * MPI_Dims_weighted_create can be used to obtain dimensions useable for a
+ * MPIX_Dims_weighted_create can be used to obtain dimensions useable for a
  * process grid of a given number of nodes based on three combined optimization
  * criteria. The optimization criteria include weights \f$\omega_i\f$ for each
  * dimension. The following criteria area applied in order:
@@ -68,18 +71,19 @@ nnodes = \prod_{i=1}^{\text{ndims}} dims_i
  *
  * @param[in] nnodes number of processes
  * @param[in] number of dimensions
- * @param[in] dim_weights weight factors for dimensions or MPI_EQUAL_WEIGHTS
+ * @param[in] dim_weights weight factors for dimensions or MPIX_EQUAL_WEIGHTS;
+ *            must not be NULL if ndims > 0
  * @param[out] dims computed optimal values for dimensions
  */
-int MPI_Dims_weighted_create(const int nnodes, const int ndims,
+int MPIX_Dims_weighted_create(const int nnodes, const int ndims,
                              const double *dim_weights, int *dims);
 
 /** PMPI interface corresponding to MPI call */
-int PMPI_Dims_weighted_create(const int nnodes, const int ndims,
+int PMPIX_Dims_weighted_create(const int nnodes, const int ndims,
                               const double *dim_weights, int *dims);
 
 #if __cplusplus
 }
 #endif
 
-#endif // SRC_MPI_DIMS_WEIGHTED_CREATE_H_
+#endif // SRC_MPIX_DIMS_WEIGHTED_CREATE_H_

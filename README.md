@@ -6,8 +6,11 @@ The following extensions to the MPI standard are provided in this collection:
 
 | Function | Description |
 | -------- | ----------- |
-| MPI_Dims_weighted_create | Replacement of MPI_Dims_create that factorizes a number taking into account weights for the individual dimensions. This is useful for creating an optimized Cartesian process topology. |
-| MPI_Info_set_json | Convenience function that sets (key, value) pairs to an MPI info object from a JSON string |
+| MPIX_Dims_weighted_create | Replacement of MPI_Dims_create that factorizes a number taking into account weights for the individual dimensions. This is useful for creating an optimized Cartesian process topology. |
+| MPIX_Info_set_json | Convenience function that sets (key, value) pairs to an MPI info object from a JSON string |
+
+All functions and constants use the `MPIX_` prefix, because the `MPI_` and `PMPI_` prefixes are
+reserved by the MPI standard. Each function has a `PMPIX_` profiling variant.
 
 ## Getting Started
 

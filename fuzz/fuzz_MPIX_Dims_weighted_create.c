@@ -1,4 +1,4 @@
-#include "MPI_Dims_weighted_create.h"
+#include "MPIX_Dims_weighted_create.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -37,7 +37,7 @@ int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
   memcpy(dims, &Data[2 * sizeof(int) + ndims * sizeof(int)],
          ndims * sizeof(int));
 
-  MPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
+  MPIX_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
 
   free(dims);
   free(dim_weights);

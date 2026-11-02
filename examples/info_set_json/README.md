@@ -1,8 +1,8 @@
-# MPI_Info_set_json example
+# MPIX_Info_set_json example
 
 Shows how a CMake project uses the installed `mpi-extensions` library. The
 program takes a key and a value from the command line, sets them on an
-`MPI_Info` object via `MPI_Info_set_json`, and reads the value back.
+`MPI_Info` object via `MPIX_Info_set_json`, and reads the value back.
 
 ## Build
 

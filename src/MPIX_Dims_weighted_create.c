@@ -26,7 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "MPI_Dims_weighted_create.h"
+#include "MPIX_Dims_weighted_create.h"
 
 #include <limits.h>
 #include <math.h>
@@ -142,13 +142,13 @@ static void optdims(const int p, int *divisors, const int ndims, int i,
   }
 }
 
-int MPI_Dims_weighted_create(const int nnodes, const int ndims,
+int MPIX_Dims_weighted_create(const int nnodes, const int ndims,
                              const double *dim_weights, int *dims) {
-  int ret = PMPI_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
+  int ret = PMPIX_Dims_weighted_create(nnodes, ndims, dim_weights, dims);
   return ret;
 }
 
-int PMPI_Dims_weighted_create(const int nnodes, const int ndims,
+int PMPIX_Dims_weighted_create(const int nnodes, const int ndims,
                               const double *dim_weights, int *dims) {
   if (nnodes < 1) {
     return MPI_ERR_ARG;
@@ -189,7 +189,7 @@ int PMPI_Dims_weighted_create(const int nnodes, const int ndims,
   }
 
   double tmp_dim_weights[ndims];
-  if (dim_weights == MPI_EQUAL_WEIGHTS) {
+  if (dim_weights == MPIX_EQUAL_WEIGHTS) {
     for (int i = 0; i < ndims; i++) {
       tmp_dim_weights[i] = 1.0;
     }
